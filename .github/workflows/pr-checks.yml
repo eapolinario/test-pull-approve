@@ -1,0 +1,15 @@
+name: Components Checks
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+jobs:
+  bump-tags:
+    name: Bump git tags
+    uses: ./.github/workflows/bump-tags.yml
