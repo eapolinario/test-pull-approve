@@ -1,0 +1,35 @@
+name: Bump git tags
+
+on:
+  workflow_call:
+    outputs:
+      next_version:
+        description: "Tag name"
+        value: ${{ jobs.bump_version.outputs.next_version }}
+jobs:
+  bump_version:
+    name: Bump Version
+    runs-on: ubuntu-latest
+    outputs:
+      next_version: ${{ steps.get_semver.outputs.next_version }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+      # Bump patch version
+      - uses: rickstaa/action-get-semver@v1
+        id: get_semver
+        with:
+          bump_level: "patch"
+      - name: Print current and next versions
+        run: |
+          echo "Current version: ${{ steps.get_semver.outputs.current_version  }}"
+          echo "Next version: ${{ steps.get_semver.outputs.next_version }}"
+      # Generate all tags for all components
+
+  tag-components:
+    needs:
+      - bump_version
+    uses: ./.github/workflows/tag-components.yml
+    with:
+      tag: ${{ steps.get_semver.outputs.next_version }}

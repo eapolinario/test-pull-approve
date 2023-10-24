@@ -1,0 +1,38 @@
+name: Tag components
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: "Tag"
+        type: string
+
+jobs:
+  tag-components:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${{ steps.get_semver.outputs.next_version }}`,
+              sha: context.sha
+            })
+            const components = [
+              "abc",
+              "defg",
+            ];
+            for (const c of components) {
+              github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/${c}/${{ github.event.inputs.tag }}`,
+                sha: context.sha
+              })
+            }
