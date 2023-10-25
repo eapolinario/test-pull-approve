@@ -6,6 +6,7 @@ on:
       tag:
         description: "Tag"
         type: string
+        required: True
 
 jobs:
   tag-components:
@@ -21,7 +22,7 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: `refs/tags/${{ github.event.inputs.tag }}`,
+              ref: `refs/tags/${{ inputs.tag }}`,
               sha: context.sha
             })
             const components = [
@@ -32,7 +33,7 @@ jobs:
               github.rest.git.createRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                ref: `refs/tags/${c}/${{ github.event.inputs.tag }}`,
+                ref: `refs/tags/${c}/${{ inputs.tag }}`,
                 sha: context.sha
               })
             }
