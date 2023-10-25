@@ -1,0 +1,28 @@
+name: Create a release using github-tag-action
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "version name. example v0.1.1"
+        required: true
+
+jobs:
+  bump-version:
+    name: bump-version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.bump-version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+
+      - name: Bump version and push tag
+        id: bump-version
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          CUSTOM_TAG: a-prefix-${{ github.event.inputs.version }}
+          RELEASE_BRANCHES: master
+
