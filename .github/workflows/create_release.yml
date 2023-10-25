@@ -33,7 +33,9 @@ jobs:
         run: |
           if [ ${{ matrix.component }} = "abc" ]; then
             echo "bla"
-          elif [ ${{ matrix.component }} != "abc" ]
+          elif [ ${{ matrix.component }} != "abc" ]; then
             echo "ble"
+          else
+            echo "blu"
           fi
         shell: bash
